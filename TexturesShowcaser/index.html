@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Textures Showcaser</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body onload="javascript:supportsFileAPI()">
+
+<center>
+<h1>Textures Showcaser</h1>
+
+<div id="xmlLoad">
+<input type="file" accept=".xml" id="xmlInput" name="files" />
+</div>
+
+</center>
+
+<output id="list"></output>
+
+<!-- <img src="C:\Users\konsn_000\Dropbox\Shared_kEgk_gSag\TexturesXMLExporter\Gametextures\Architectural\Bricks\Modern\A_Trapezoidal_Metal_Wall\Metal_TrapazoidPattern_1k_TGA\Metal_TrapazoidPattern_1k_d1.tga" alt="Mountain View" style="width:304px;height:228px;"> -->
+
+
+<br>
+<div id="footer" class="footer">
+Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Konstantinos Egkarchos.</a>.
+</div>
+
+<script>
+	document.getElementById('xmlInput').addEventListener('change', handleFileSelect, false);
+
+	// If api is supported this is true.
+	var apiSupported;
+	// If xml is laoded this is true.
+	var xmlLoaded;
+
+	var xmlFile;
+	var xmlDomDoc;
+	var nodeNamesDepth;
+
+	function CallMe()
+	{
+		window.open("file:C:/Users/konsn_000/Dropbox/Shared_kEgk_gSag/TexturesXMLExporter/Clean_Storage_Crate/Wood_CommonStorageCrate_1k_TGA");
+	}
+
+	function supportsFileAPI()
+	{
+		// Check for the various File API support.
+		if (window.File && window.FileReader && window.FileList && window.Blob) 
+		{
+			apiSupported = true;
+		  	// Great success! All the File APIs are supported.
+		  	console.log("File, FileReader, FileList and Blob are supported.");
+		} 
+		else 
+		{
+			apiSupported = false;
+		  	alert("This browser doesn't support the required functions.");
+
+		  	// Hide all page
+		  	document.getElementById("xmlLoad").style.display = 'none';
+		  	document.getElementById("list").style.display = 'none';
+		}
+	}
+
+	function handleFileSelect(evt)
+	{
+		xmlFile = evt.target.files[0]; // FileList object
+		xmlLoaded = false;
+
+		checkXMLValidity();
+	}
+
+	function checkXMLValidity()
+	{
+		if (xmlFile && xmlFile.type == "text/xml")
+		{
+			document.getElementById("xmlLoad").style.display = 'none';
+		}
+		else
+		{
+			alert("Failed to load file.");
+		}
+
+		// test
+		var reader = new FileReader();
+		waitForTextReadComplete(reader);
+		reader.readAsText(xmlFile);
+	}
+
+	function waitForTextReadComplete(reader)
+	{
+	    reader.onloadend = function(event)
+	    {
+	        var text = event.target.result;
+
+	        parseTextAsXml(text);
+	    }
+	}
+
+	function parseTextAsXml(text)
+	{
+	    var parser = new DOMParser();
+	    xmlDomDoc = parser.parseFromString(text, "text/xml");
+	    xmlLoaded = true;
+
+	    //now, extract items from xmlDomDoc and assign to appropriate text input fields
+	    nodeNamesDepth = [xmlDomDoc.documentElement.nodeName];
+
+	    /*var rootNode = xmlDomDoc.documentElement.childNodes;
+		for (i=0;i<rootNode.length;i++)
+		{ 
+			if (rootNode[i].nodeType==1)
+			{
+				//Process only element nodes (type 1) 
+				console.log(rootNode[i].nodeName + " " + rootNode[i].nodeValue);
+			}
+		}*/
+	}
+
+	function showCurrentFolderContents()
+	{
+
+	}
+</script>
+
+</body>
+</html>
