@@ -26,6 +26,26 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Kons
 </div>
 
 <script>
+	// create the nodeType constants if the Node object is not defined
+	if (!window.Node)
+	{
+		var Node =
+		{
+			ELEMENT_NODE                :  1,
+			ATTRIBUTE_NODE              :  2,
+			TEXT_NODE                   :  3,
+			CDATA_SECTION_NODE          :  4,
+			ENTITY_REFERENCE_NODE       :  5,
+			ENTITY_NODE                 :  6,
+			PROCESSING_INSTRUCTION_NODE :  7,
+			COMMENT_NODE                :  8,
+			DOCUMENT_NODE               :  9,
+			DOCUMENT_TYPE_NODE          : 10,
+			DOCUMENT_FRAGMENT_NODE      : 11,
+			NOTATION_NODE               : 12
+		}
+	}
+
 	document.getElementById('xmlInput').addEventListener('change', handleFileSelect, false);
 
 	// If api is supported this is true.
@@ -105,6 +125,9 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Kons
 
 	    //now, extract items from xmlDomDoc and assign to appropriate text input fields
 	    nodeNamesDepth = [xmlDomDoc.documentElement.nodeName];
+	    nodeNamesDepth = ["Texs", "TexturesXMLExporter", "TexturesXMLExporter", "Paneled_Wood_Wall", "Wall_WoodPanel_1k_TGA"];
+
+	    showCurrentFolderContents();
 
 	    /*var rootNode = xmlDomDoc.documentElement.childNodes;
 		for (i=0;i<rootNode.length;i++)
@@ -117,9 +140,101 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Kons
 		}*/
 	}
 
+	// Test function to traverse the whole xml node tree.
+	function traverse(tree) 
+	{
+		if(tree.hasChildNodes()) 
+		{ 
+			document.write('<ul><li>');
+			document.write('<b>' + tree.tagName + '</b>');
+			var nodes=tree.childNodes.length;
+			for(var i=0; i<tree.childNodes.length; i++)
+				traverse(tree.childNodes[i]);
+			document.write('</li></ul>'); 
+		}
+	}
+
+	// Finds inside a node the required name from the attributes.
+	function findName (node, name) 
+	{
+		var childNodes = node.childNodes;
+		for (var i = 0; i < childNodes.length; i++)
+		{
+			// Check if node and if folder.
+			if (childNodes[i].nodeType == Node.ELEMENT_NODE && childNodes[i].nodeName == "folder")
+			{
+				// Check if it is the name we are searching for
+				if (childNodes[i].getAttribute('name') == name)
+				{
+					// return it
+					return childNodes[i];
+				}
+			}
+		}
+
+		console.log("Houston, we have a problem");
+		return null;
+	}
+
+	function getMaps (node) 
+	{
+		var childNodes = node.childNodes;
+		var maps = [];
+
+		for (var cn = 0; cn < childNodes.length; cn++) 
+		{
+			// Handle maps
+			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "map")
+			{
+
+			}
+			// Handle materials
+			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "material")
+			{
+				maps.concat(getMaps(childNodes[cn]));
+			}
+			childNodes[cn]
+		}
+	}
+
 	function showCurrentFolderContents()
 	{
+		var reader = new FileReader();
 
+		var nestedNode = xmlDomDoc.getElementsByTagName(nodeNamesDepth[0])[0];
+
+		traverse(nestedNode);
+		
+		for (var i = 1; i < nodeNamesDepth.length; i++)
+		{
+			console.log("Index " + i);
+			console.log("Current in " + nestedNode.nodeName + " with name " + nestedNode.getAttribute('name'));
+			console.log("Child nodes " + nestedNode.childNodes[0].length);
+
+			console.log("Searching for " + nodeNamesDepth[i]);
+
+			nestedNode = findName(nestedNode, nodeNamesDepth[i]);
+			console.log(" ");
+			
+		};
+		console.log("Current in " + nestedNode.nodeName + " with name " + nestedNode.getAttribute('name'));
+
+		/*
+		// Closure to capture the file information.
+		reader.onload = (function(theFile) 
+		{
+		return function(e) 
+		{
+			// Render thumbnail.
+			var span = document.createElement('span');
+			span.innerHTML = ['<img class="thumb" src="', e.target.result, '" title="', escape(theFile.name), '"/>'].join('');
+			document.getElementById('list').insertBefore(span, null);
+		};
+		})(f);
+
+      // Read in the image file as a data URL.
+      reader.readAsDataURL(f);
+      */
 	}
 </script>
 
