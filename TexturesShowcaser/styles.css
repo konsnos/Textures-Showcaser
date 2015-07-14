@@ -1,3 +1,15 @@
+.path {
+    position: absolute;
+    left:10px;
+    right:10px;
+    background-color:#ffffff;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding:6px;
+    border: 1px solid black;
+}
+
 .footer {
     position: absolute;
     left:10px;
@@ -10,6 +22,7 @@
     padding:6px;
     border: 1px solid black;
 }
+
 body {
     font-family: 'Lato', sans-serif;
 }
@@ -17,6 +30,6 @@ body {
 .thumb {
     height: 200px;
     width: 200px;
-    border: 1px solid #000;
+    border: 1px solid #000000;
     margin: 10px 5px 0 0;
 }

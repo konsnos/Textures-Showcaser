@@ -4,7 +4,7 @@
 <title>Textures Showcaser</title>
 <link rel="stylesheet" href="styles.css">
 </head>
-<body onload="javascript:supportsFileAPI()">
+<body onload="javascript:initialize()">
 
 <center>
 <h1>Textures Showcaser</h1>
@@ -13,16 +13,16 @@
 <input type="file" accept=".xml" id="xmlInput" name="files" />
 </div>
 
-</center>
+<div id="path" class="path">
+	Current folder : <div id="currentPath"></div>
+</div>
 
 <output id="list"></output>
-
-<!-- <img src="C:\Users\konsn_000\Dropbox\Shared_kEgk_gSag\TexturesXMLExporter\Gametextures\Architectural\Bricks\Modern\A_Trapezoidal_Metal_Wall\Metal_TrapazoidPattern_1k_TGA\Metal_TrapazoidPattern_1k_d1.tga" alt="Mountain View" style="width:304px;height:228px;"> -->
-
+</center>
 
 <br>
 <div id="footer" class="footer">
-Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Konstantinos Egkarchos.</a>.
+Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a href="mailto:konsnosl@gmail.com?Subject=TexturesShowcaser" target="_top">Konstantinos Egkarchos</a>.
 </div>
 
 <script>
@@ -60,6 +60,13 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Kons
 	function CallMe()
 	{
 		window.open("file:C:/Users/konsn_000/Dropbox/Shared_kEgk_gSag/TexturesXMLExporter/Clean_Storage_Crate/Wood_CommonStorageCrate_1k_TGA");
+	}
+	
+	function initialize()
+	{
+		document.getElementById("path").style.display = 'none';
+		
+		supportsFileAPI();
 	}
 
 	function supportsFileAPI()
@@ -127,20 +134,16 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Kons
 	    nodeNamesDepth = [xmlDomDoc.documentElement.nodeName];
 	    nodeNamesDepth = ["Texs", "TexturesXMLExporter", "TexturesXMLExporter", "Paneled_Wood_Wall", "Wall_WoodPanel_1k_TGA"];
 
-	    showCurrentFolderContents();
-
-	    /*var rootNode = xmlDomDoc.documentElement.childNodes;
-		for (i=0;i<rootNode.length;i++)
-		{ 
-			if (rootNode[i].nodeType==1)
-			{
-				//Process only element nodes (type 1) 
-				console.log(rootNode[i].nodeName + " " + rootNode[i].nodeValue);
-			}
-		}*/
+	    xmlLoadedSuccessfully();
+	}
+	
+	function xmlLoadedSuccessfully()
+	{
+		document.getElementById("path").style.display = 'block';
+		showCurrentFolderContents();
 	}
 
-	// Test function to traverse the whole xml node tree.
+	/** Test function to traverse the whole xml node tree. */
 	function traverse(tree) 
 	{
 		if(tree.hasChildNodes()) 
@@ -154,7 +157,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Kons
 		}
 	}
 
-	// Finds inside a node the required name from the attributes.
+	/** Finds inside a node the required name from the attributes. */
 	function findName (node, name) 
 	{
 		var childNodes = node.childNodes;
@@ -176,6 +179,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Kons
 		return null;
 	}
 
+	/** Return all maps contained in the node. */
 	function getMaps (node) 
 	{
 		var childNodes = node.childNodes;
@@ -186,15 +190,17 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Kons
 			// Handle maps
 			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "map")
 			{
-
+				maps.push(childNodes[cn].getAttribute('thumb'));
 			}
 			// Handle materials
 			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "material")
 			{
-				maps.concat(getMaps(childNodes[cn]));
+				var newMaps = getMaps(childNodes[cn]);
+				maps = maps.concat(newMaps);
 			}
-			childNodes[cn]
 		}
+		
+		return maps;
 	}
 
 	function showCurrentFolderContents()
@@ -203,38 +209,30 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by Kons
 
 		var nestedNode = xmlDomDoc.getElementsByTagName(nodeNamesDepth[0])[0];
 
-		traverse(nestedNode);
+		//traverse(nestedNode);
 		
 		for (var i = 1; i < nodeNamesDepth.length; i++)
 		{
-			console.log("Index " + i);
-			console.log("Current in " + nestedNode.nodeName + " with name " + nestedNode.getAttribute('name'));
-			console.log("Child nodes " + nestedNode.childNodes[0].length);
-
-			console.log("Searching for " + nodeNamesDepth[i]);
-
 			nestedNode = findName(nestedNode, nodeNamesDepth[i]);
-			console.log(" ");
-			
-		};
-		console.log("Current in " + nestedNode.nodeName + " with name " + nestedNode.getAttribute('name'));
+		}
 
-		/*
-		// Closure to capture the file information.
-		reader.onload = (function(theFile) 
+		showMaps(getMaps(nestedNode));
+	}
+	
+	function showMaps(maps)
+	{
+		console.log("Showing " + maps.length + " maps.");
+		// Render thumbnail.
+		var span = document.createElement('span');
+		var innerHtml = "";
+		
+		for(var m = 0;m<maps.length;m++)
 		{
-		return function(e) 
-		{
-			// Render thumbnail.
-			var span = document.createElement('span');
-			span.innerHTML = ['<img class="thumb" src="', e.target.result, '" title="', escape(theFile.name), '"/>'].join('');
-			document.getElementById('list').insertBefore(span, null);
-		};
-		})(f);
-
-      // Read in the image file as a data URL.
-      reader.readAsDataURL(f);
-      */
+			innerHtml += '<img class="thumb" src="' + maps[m] + '"/>';
+		}
+		span.innerHTML = innerHtml;
+		
+		document.getElementById('list').insertBefore(span, null);
 	}
 </script>
 
