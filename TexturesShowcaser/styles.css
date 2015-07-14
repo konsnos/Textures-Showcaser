@@ -1,7 +1,9 @@
 .path {
     position: absolute;
+    word-wrap: break-word;
     left:10px;
     right:10px;
+    font-size: 90%;
     background-color:#ffffff;
     text-align: center;
     margin-left: auto;
