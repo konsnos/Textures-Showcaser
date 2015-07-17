@@ -59,7 +59,6 @@ function parseTextAsXml(text)
     
 	var event = new CustomEvent('xmlLoaded', {'detail': xmlDomDoc});
 	document.dispatchEvent(event);
-    //xmlLoadedSuccessfully();
 }
 
 /** Test function to traverse the whole xml node tree. */
@@ -69,8 +68,8 @@ function traverse(tree)
 	{ 
 		document.write('<ul><li>');
 		document.write('<b>' + tree.tagName + '</b>');
-		var nodes=tree.childNodes.length;
-		for(var i=0; i<tree.childNodes.length; i++)
+		var nodesLength=tree.childNodes.length;
+		for(var i=0; i<nodesLength; i++)
 			traverse(tree.childNodes[i]);
 		document.write('</li></ul>'); 
 	}

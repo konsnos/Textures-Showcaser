@@ -15,7 +15,7 @@
 </div>
 
 <div id="path" class="path">
-	Current folder :<br><div id="currentPath"></div>
+	<u>Current folder</u><br><div id="currentPath"></div>
 </div>
 <br>
 <br>
@@ -65,7 +65,6 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		{
 			apiSupported = true;
 		  	// Great success! All the File APIs are supported.
-		  	console.log("File, FileReader, FileList and Blob are supported.");
 		} 
 		else 
 		{
@@ -98,10 +97,27 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		
 		//now, extract items from xmlDomDoc and assign to appropriate text input fields
 		nodeNamesDepth = [xmlDomDoc.documentElement.nodeName];
-		nodeNamesDepth = ["Texs", "TexturesXMLExporter", "TexturesXMLExporter", "Paneled_Wood_Wall", "Wall_WoodPanel_1k_TGA"];
+		//nodeNamesDepth = ["Texs", "TexturesXMLExporter", "TexturesXMLExporter", "Paneled_Wood_Wall", "Wall_WoodPanel_1k_TGA"];
 	
 		document.getElementById("path").style.display = 'block';
 		showCurrentFolderContents();
+	}
+	
+	/** Returns all folders contained in the node. */
+	function getFolders(node)
+	{
+		var childNodes = node.childNodes;
+		var folders = [];
+		
+		for(var cn = 0; cn < childNodes.length; cn++)
+		{
+			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "folder")
+			{
+				folders.push(childNodes[cn].getAttribute('name'));
+			}
+		}
+		
+		return folders;
 	}
 
 	/** Return all maps contained in the node. */
@@ -115,7 +131,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 			// Handle maps
 			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "map")
 			{
-				maps.push(childNodes[cn].getAttribute('thumb'));
+				maps.push([childNodes[cn].getAttribute('thumb'), childNodes[cn].textContent.replace(/^.*[\\\/]/, '')]);
 			}
 			// Handle materials
 			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "material")
@@ -127,17 +143,36 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		
 		return maps;
 	}
-
-	function showCurrentFolderContents()
+	
+	/** Returns the full path of the folder. */
+	function getFolderFullPath(nestedNode)
 	{
-		var nestedNode = xmlDomDoc.getElementsByTagName(nodeNamesDepth[0])[0];
-		
 		var path = nestedNode.getAttribute("path");
 		for(var p = 1;p < nodeNamesDepth.length;p++)
 		{
 			path += "\\" + nodeNamesDepth[p];
 		}
-		document.getElementById("currentPath").innerHTML = path; 
+		
+		return path;
+	}
+	
+	/** Returns the path from the xml root. */
+	function getFolderPath()
+	{
+		var path = nodeNamesDepth[0];
+		for(var p = 1;p < nodeNamesDepth.length;p++)
+		{
+			path += "\\" + nodeNamesDepth[p];
+		}
+		
+		return path;
+	}
+
+	function showCurrentFolderContents()
+	{
+		var nestedNode = xmlDomDoc.getElementsByTagName(nodeNamesDepth[0])[0];
+		
+		document.getElementById("currentPath").innerHTML = getFolderFullPath(nestedNode); 
 
 		//traverse(nestedNode);
 		
@@ -146,23 +181,59 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 			nestedNode = findName(nestedNode, nodeNamesDepth[i]);
 		}
 
-		showMaps(getMaps(nestedNode));
+		showContents(getFolders(nestedNode), getMaps(nestedNode));
 	}
 	
-	function showMaps(maps)
+	var containedFolders;
+	var containedMaps;
+	
+	function showContents(folders, maps)
 	{
-		console.log("Showing " + maps.length + " maps.");
+		containedFolders = folders;
+		containedMaps = maps;
+		
+		// Remove previous elements
+		var prevSpan = document.getElementById('span');
+		if(prevSpan)
+		{
+			document.getElementById("list").removeChild(prevSpan);
+		}
+		
 		// Render thumbnail.
 		var span = document.createElement('span');
+		span.setAttribute("id","span");
 		var innerHtml = "";
+		
+		if(nodeNamesDepth.length > 1)
+		{
+			innerHtml += '<img class="thumb" src="./images/folder_up.png" title="Back" onclick="goToParentFolder()" />';
+		}
+		
+		for(var f = 0;f<folders.length;f++)
+		{
+			innerHtml += '<img class="thumb" src="./images/folder.png" title="' + folders[f] + '" onclick="goToFolder(\'' + folders[f] + '\')" />';	
+		}
 		
 		for(var m = 0;m<maps.length;m++)
 		{
-			innerHtml += '<img class="thumb" src="' + maps[m] + '"/>';
+			innerHtml += '<img class="thumb" src="' + maps[m][0] + '" title="' + maps[m][1] + '" />';
 		}
 		span.innerHTML = innerHtml;
 		
 		document.getElementById('list').insertBefore(span, null);
+	}
+	
+	function goToParentFolder()
+	{
+		nodeNamesDepth.pop();
+		showCurrentFolderContents();
+	}
+	
+	function goToFolder(node)
+	{
+		console.log("Pushing: " + node);
+		nodeNamesDepth.push(node);
+		showCurrentFolderContents();
 	}
 </script>
 
