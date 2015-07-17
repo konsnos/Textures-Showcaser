@@ -216,25 +216,25 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		document.getElementById('list').insertBefore(span, null);
 	}
 	
+	/** Open parent folder. */
 	function goToParentFolder()
 	{
 		nodeNamesDepth.pop();
 		showCurrentFolderContents();
 	}
 	
+	/** Open folder. */
 	function goToFolder(node)
 	{
 		nodeNamesDepth.push(node);
 		showCurrentFolderContents();
 	}
 
+	/** Retrieve the path of the map and if IE then open windows explorer to the map, or if any other browser then offer to copy the path. */
 	function openImg(index)
 	{
-		console.log("Map path : " + containedMaps[index][1]);
-		
 		var folderPathIndex = containedMaps[index][1].lastIndexOf('\\');
 		var folderPath = containedMaps[index][1].substr(0, folderPathIndex);
-		console.log("Folder path : " + folderPath);
 		
 		if(!!document.documentMode)	// Is IE
 		{
