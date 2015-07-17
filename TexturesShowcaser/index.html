@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Textures Showcaser</title>
+<script type='text/javascript' src='xml.js'></script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body onload="javascript:initialize()">
@@ -30,25 +31,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 </div>
 
 <script>
-	// create the nodeType constants if the Node object is not defined
-	if (!window.Node)
-	{
-		var Node =
-		{
-			ELEMENT_NODE                :  1,
-			ATTRIBUTE_NODE              :  2,
-			TEXT_NODE                   :  3,
-			CDATA_SECTION_NODE          :  4,
-			ENTITY_REFERENCE_NODE       :  5,
-			ENTITY_NODE                 :  6,
-			PROCESSING_INSTRUCTION_NODE :  7,
-			COMMENT_NODE                :  8,
-			DOCUMENT_NODE               :  9,
-			DOCUMENT_TYPE_NODE          : 10,
-			DOCUMENT_FRAGMENT_NODE      : 11,
-			NOTATION_NODE               : 12
-		}
-	}
+	var xmlLoaded;
 
 	document.getElementById('xmlInput').addEventListener('change', handleFileSelect, false);
 
@@ -71,6 +54,8 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		document.getElementById("path").style.display = 'none';
 		
 		supportsFileAPI();
+		
+		InitializeXMLNodes();
 	}
 
 	function supportsFileAPI()
@@ -98,89 +83,25 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		xmlFile = evt.target.files[0]; // FileList object
 		xmlLoaded = false;
 
-		checkXMLValidity();
-	}
-
-	function checkXMLValidity()
-	{
 		if (xmlFile && xmlFile.type == "text/xml")
 		{
 			document.getElementById("xmlLoad").style.display = 'none';
+			document.addEventListener('xmlLoaded', xmlLoadedSuccessfully);
+			checkXMLValidity(xmlFile);
 		}
-		else
-		{
-			alert("Failed to load file.");
-		}
-
-		// test
-		var reader = new FileReader();
-		waitForTextReadComplete(reader);
-		reader.readAsText(xmlFile);
-	}
-
-	function waitForTextReadComplete(reader)
-	{
-	    reader.onloadend = function(event)
-	    {
-	        var text = event.target.result;
-
-	        parseTextAsXml(text);
-	    }
-	}
-
-	function parseTextAsXml(text)
-	{
-	    var parser = new DOMParser();
-	    xmlDomDoc = parser.parseFromString(text, "text/xml");
-	    xmlLoaded = true;
-
-	    //now, extract items from xmlDomDoc and assign to appropriate text input fields
-	    nodeNamesDepth = [xmlDomDoc.documentElement.nodeName];
-	    nodeNamesDepth = ["Texs", "TexturesXMLExporter", "TexturesXMLExporter", "Paneled_Wood_Wall", "Wall_WoodPanel_1k_TGA"];
-
-	    xmlLoadedSuccessfully();
 	}
 	
-	function xmlLoadedSuccessfully()
+	function xmlLoadedSuccessfully(e)
 	{
+		xmlLoaded = true;
+		xmlDomDoc = e.detail;
+		
+		//now, extract items from xmlDomDoc and assign to appropriate text input fields
+		nodeNamesDepth = [xmlDomDoc.documentElement.nodeName];
+		nodeNamesDepth = ["Texs", "TexturesXMLExporter", "TexturesXMLExporter", "Paneled_Wood_Wall", "Wall_WoodPanel_1k_TGA"];
+	
 		document.getElementById("path").style.display = 'block';
 		showCurrentFolderContents();
-	}
-
-	/** Test function to traverse the whole xml node tree. */
-	function traverse(tree) 
-	{
-		if(tree.hasChildNodes()) 
-		{ 
-			document.write('<ul><li>');
-			document.write('<b>' + tree.tagName + '</b>');
-			var nodes=tree.childNodes.length;
-			for(var i=0; i<tree.childNodes.length; i++)
-				traverse(tree.childNodes[i]);
-			document.write('</li></ul>'); 
-		}
-	}
-
-	/** Finds inside a node the required name from the attributes. */
-	function findName (node, name) 
-	{
-		var childNodes = node.childNodes;
-		for (var i = 0; i < childNodes.length; i++)
-		{
-			// Check if node and if folder.
-			if (childNodes[i].nodeType == Node.ELEMENT_NODE && childNodes[i].nodeName == "folder")
-			{
-				// Check if it is the name we are searching for
-				if (childNodes[i].getAttribute('name') == name)
-				{
-					// return it
-					return childNodes[i];
-				}
-			}
-		}
-
-		console.log("Houston, we have a problem");
-		return null;
 	}
 
 	/** Return all maps contained in the node. */
