@@ -56,6 +56,22 @@ function parseTextAsXml(text)
 {
     var parser = new DOMParser();
     var xmlDomDoc = parser.parseFromString(text, "text/xml");
+	
+	if(!!document.documentMode)	// Is IE. Implement CustomEvent.
+	{
+		(function () 
+		{
+	      function CustomEvent ( event, params ) {
+	        params = params || { bubbles: false, cancelable: false, detail: undefined };
+	        var evt = document.createEvent( 'CustomEvent' );
+	        evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+	        return evt;
+	      };
+	
+	      CustomEvent.prototype = window.Event.prototype;
+	      window.CustomEvent = CustomEvent;
+	    })();
+	}
     
 	var event = new CustomEvent('xmlLoaded', {'detail': xmlDomDoc});
 	document.dispatchEvent(event);

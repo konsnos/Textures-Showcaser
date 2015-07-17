@@ -43,11 +43,6 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 	var xmlFile;
 	var xmlDomDoc;
 	var nodeNamesDepth;
-
-	function CallMe()
-	{
-		window.open("file:C:/Users/konsn_000/Dropbox/Shared_kEgk_gSag/TexturesXMLExporter/Clean_Storage_Crate/Wood_CommonStorageCrate_1k_TGA");
-	}
 	
 	function initialize()
 	{
@@ -131,7 +126,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 			// Handle maps
 			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "map")
 			{
-				maps.push([childNodes[cn].getAttribute('thumb'), childNodes[cn].textContent.replace(/^.*[\\\/]/, '')]);
+				maps.push([childNodes[cn].getAttribute('thumb'), childNodes[cn].textContent]);
 			}
 			// Handle materials
 			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "material")
@@ -184,12 +179,10 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		showContents(getFolders(nestedNode), getMaps(nestedNode));
 	}
 	
-	var containedFolders;
 	var containedMaps;
 	
 	function showContents(folders, maps)
 	{
-		containedFolders = folders;
 		containedMaps = maps;
 		
 		// Remove previous elements
@@ -216,7 +209,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		
 		for(var m = 0;m<maps.length;m++)
 		{
-			innerHtml += '<img class="thumb" src="' + maps[m][0] + '" title="' + maps[m][1] + '" />';
+			innerHtml += '<img class="thumb" src="' + maps[m][0] + '" title="' + maps[m][1].replace(/^.*[\\\/]/, '') + '" onclick="openImg(' + m + ')" />';
 		}
 		span.innerHTML = innerHtml;
 		
@@ -231,9 +224,26 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 	
 	function goToFolder(node)
 	{
-		console.log("Pushing: " + node);
 		nodeNamesDepth.push(node);
 		showCurrentFolderContents();
+	}
+
+	function openImg(index)
+	{
+		console.log("Map path : " + containedMaps[index][1]);
+		
+		var folderPathIndex = containedMaps[index][1].lastIndexOf('\\');
+		var folderPath = containedMaps[index][1].substr(0, folderPathIndex);
+		console.log("Folder path : " + folderPath);
+		
+		if(!!document.documentMode)	// Is IE
+		{
+			window.open("file:" + folderPath);
+		}
+		else	// Other browser
+		{
+			prompt("Folder path", folderPath);
+		}
 	}
 </script>
 
