@@ -1,3 +1,7 @@
+body {
+    font-family: 'Lato', sans-serif;
+}
+
 .path {
     position: absolute;
     word-wrap: break-word;
@@ -25,14 +29,26 @@
     border: 1px solid black;
 }
 
-body {
-    font-family: 'Lato', sans-serif;
+.thumbTitle {
+    display: inline-block;
+    width: 200px;
+    height: 220px;
+    margin: 10px 10px 0 0;
 }
 
 .thumb {
     height: 200px;
     width: 200px;
     cursor: pointer;
-    /*border: 1px solid #000000;*/
-    margin: 10px 10px 0 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.thumbSubtitle {
+    width: 200px;
+    height: 20px;
+    position: absolute;
+    word-wrap: break-word;
+    margin-left: auto;
+    margin-right: auto;
 }

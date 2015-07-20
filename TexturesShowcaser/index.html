@@ -20,11 +20,11 @@
 <br>
 <br>
 <br>
-<br>
 
 <output id="list"></output>
 </center>
 
+<br>
 <br>
 <div id="footer" class="footer">
 Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a href="mailto:konsnosl@gmail.com?Subject=TexturesShowcaser" target="_top">Konstantinos Egkarchos</a>.
@@ -92,9 +92,10 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		
 		//now, extract items from xmlDomDoc and assign to appropriate text input fields
 		nodeNamesDepth = [xmlDomDoc.documentElement.nodeName];
-		//nodeNamesDepth = ["Texs", "TexturesXMLExporter", "TexturesXMLExporter", "Paneled_Wood_Wall", "Wall_WoodPanel_1k_TGA"];
+		//document.write(xmlDomDoc.documentElement.textContent);
 	
 		document.getElementById("path").style.display = 'block';
+		//traverse(xmlDomDoc);
 		showCurrentFolderContents();
 	}
 	
@@ -197,19 +198,22 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		span.setAttribute("id","span");
 		var innerHtml = "";
 		
+		var title;
 		if(nodeNamesDepth.length > 1)
 		{
-			innerHtml += '<img class="thumb" src="./images/folder_up.png" title="Back" onclick="goToParentFolder()" />';
+			title = nodeNamesDepth[nodeNamesDepth.length - 1];
+			innerHtml += '<span class="thumbTitle"><img class="thumb" src="./images/folder_up.png" title="' + title + '" onclick="goToParentFolder()" /><br><div class="thumbSubtitle">' + title + '</div></span>';
 		}
 		
 		for(var f = 0;f<folders.length;f++)
 		{
-			innerHtml += '<img class="thumb" src="./images/folder.png" title="' + folders[f] + '" onclick="goToFolder(\'' + folders[f] + '\')" />';	
+			title = folders[f];
+			innerHtml += '<span class="thumbTitle"><img class="thumb" src="./images/folder.png" title="' + title + '" onclick="goToFolder(\'' + title + '\')" /><br><div class="thumbSubtitle">' + title + '</div></span>';	
 		}
 		
 		for(var m = 0;m<maps.length;m++)
 		{
-			innerHtml += '<img class="thumb" src="' + maps[m][0] + '" title="' + maps[m][1].replace(/^.*[\\\/]/, '') + '" onclick="openImg(' + m + ')" />';
+			innerHtml += '<span class="thumbTitle"><img class="thumb" src="' + maps[m][0] + '" title="' + maps[m][1].replace(/^.*[\\\/]/, '') + '" onclick="openImg(' + m + ')" /></span>';
 		}
 		span.innerHTML = innerHtml;
 		

@@ -84,8 +84,8 @@ function traverse(tree)
 	{ 
 		document.write('<ul><li>');
 		document.write('<b>' + tree.tagName + '</b>');
-		var nodesLength=tree.childNodes.length;
-		for(var i=0; i<nodesLength; i++)
+
+		for(var i=0; i<tree.childNodes.length; i++)
 			traverse(tree.childNodes[i]);
 		document.write('</li></ul>'); 
 	}
