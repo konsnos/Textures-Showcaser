@@ -1,26 +1,20 @@
 # Textures Showcaser #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Textures Showcaser is a tool which along with TexturesXMLExporter shows textures in a folders.
 
-### What is this repository for? ###
+To open it, just open with any browser the file index.html . The page will require an xml generated with TexturesXMLExporter. When provided then the page shows all folders and textures with thumbnails in tree-hierarchy.
 
-* Quick summary
-* Version preAlpha
+Version 1.0
 
-### How do I get set up? ###
+### Requirements ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+Textures Showcaser is local-only page, so it can work on any pc agnostically.
+
+However requires an xml and thumbnails provided by TexturesXMLExporter. The xml provides data in a tree hierarchy about containing folders, materials and textures. The thumbnails should be 200x200 pixels, and are used to show a preview of the textures.
 
 ### Contribution guidelines ###
 
-* Writing tests
-* Code review
-* Other guidelines
+Code must be self documented. Commit messages must also explain their changes.
 
 ### Contact ###
 
