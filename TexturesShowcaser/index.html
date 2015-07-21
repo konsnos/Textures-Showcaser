@@ -44,6 +44,9 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 	var xmlDomDoc;
 	var nodeNamesDepth;
 	
+	var containedMaps;
+	var containedMats;
+	
 	function initialize()
 	{
 		document.getElementById("path").style.display = 'none';
@@ -115,9 +118,32 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		
 		return folders;
 	}
+	
+	/**
+	 * Returns all materials contained in the node.
+	 * A 2d array is returned which contains the names of the materials and the maps.
+	 */
+	function getMaterials(node)
+	{
+		var childNodes = node.childNodes;
+		var mats = [];
+		
+		for(var cn = 0; cn < childNodes.length; cn++)
+		{
+			if(childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "material")
+			{
+				mats.push([childNodes[cn].getAttribute('name'), getMaps(childNodes[cn])])
+			}
+		}
+		
+		return mats;
+	}
 
-	/** Return all maps contained in the node. */
-	function getMaps (node) 
+	/** 
+	 * Return all maps contained in the node.
+	 * The returned variable is a 2D array of the source to the thumb, the text content, and the type.
+	 */
+	function getMaps (node)
 	{
 		var childNodes = node.childNodes;
 		var maps = [];
@@ -127,7 +153,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 			// Handle maps
 			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "map")
 			{
-				maps.push([childNodes[cn].getAttribute('thumb'), childNodes[cn].textContent]);
+				maps.push([childNodes[cn].getAttribute('thumb'), childNodes[cn].textContent, childNodes[cn].getAttribute('type')]);
 			}
 			// Handle materials
 			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "material")
@@ -177,50 +203,84 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 			nestedNode = findName(nestedNode, nodeNamesDepth[i]);
 		}
 
-		showContents(getFolders(nestedNode), getMaps(nestedNode));
+		showContents(getFolders(nestedNode), getMaps(nestedNode), getMaterials(nestedNode));
 	}
 	
-	var containedMaps;
-	
-	function showContents(folders, maps)
+	function showContents(folders, maps, materials)
 	{
 		containedMaps = maps;
+		containedMats = materials;
 		
 		// Remove previous elements
-		var prevSpan = document.getElementById('span');
-		if(prevSpan)
+		var prevList = document.getElementById('containerList');
+		if(prevList)
 		{
-			document.getElementById("list").removeChild(prevSpan);
+			document.getElementById("list").removeChild(prevList);
 		}
 		
 		// Render thumbnail.
-		var span = document.createElement('span');
-		span.setAttribute("id","span");
+		var newList = document.createElement('div');
+		newList.setAttribute("id","containerList");
 		var innerHtml = "";
 		
 		var title;
 		if(nodeNamesDepth.length > 1)
 		{
 			title = nodeNamesDepth[nodeNamesDepth.length - 1];
-			innerHtml += '<span class="thumbTitle"><img class="thumb" src="./images/folder_up.png" title="' + title + '" onclick="goToParentFolder()" /><br><div class="thumbSubtitle">' + title + '</div></span>';
+			innerHtml += '<div class="thumbTitle"><img class="thumb" src="./images/folder_up.png" title="' + title + '" onclick="goToParentFolder()" /><br><div class="thumbSubtitle">' + title + '</div></div>';
 		}
 		
-		for(var f = 0;f<folders.length;f++)
+		for(var f = 0; f < folders.length; f++)
 		{
 			title = folders[f];
-			innerHtml += '<span class="thumbTitle"><img class="thumb" src="./images/folder.png" title="' + title + '" onclick="goToFolder(\'' + title + '\')" /><br><div class="thumbSubtitle">' + title + '</div></span>';	
+			innerHtml += '<div class="thumbTitle"><img class="thumb" src="./images/folder.png" title="' + title + '" onclick="goToFolder(\'' + title + '\')" /><br><div class="thumbSubtitle">' + title + '</div></div>';	
 		}
 		
-		for(var m = 0;m<maps.length;m++)
+		for(var m = 0; m < materials.length; m++)
 		{
-			// get name from path: .replace(/^.*[\\\/]/, '')
-			//innerHtml += '<span class="thumbTitle"><img class="thumb" src="' + maps[m][0] + '" title="' + maps[m][1].replace(/^.*[\\\/]/, '') + '" onclick="openImg(' + m + ')" /></span>';
-			innerHtml += '<span class="thumbTitle"><img class="thumb" src="' + maps[m][0] + '" onclick="openImg(' + m + ')" /><span class="thumbTooltip"><img src="' + maps[m][0] + '"></span></span>';
+			innerHtml += getMaterialHtml(materials[m], m);
 		}
-		span.innerHTML = innerHtml;
+		// get name from path: .replace(/^.*[\\\/]/, '')
+		newList.innerHTML = innerHtml;
 		
 		thumbsTooltips = document.getElementsByClassName('thumbTooltip');
-		document.getElementById('list').insertBefore(span, null);
+		document.getElementById('list').insertBefore(newList, null);
+	}
+	
+	/** Returns the index of the map that is diffuse. Or -1 if there is none. */
+	function getDiffuseFromMaterial(material)
+	{
+		for(var m = 0; m < material[1].length; m++)
+		{
+			if(material[1][m][2] == 'diffuse')
+			{
+				return m;
+			}
+		}
+		
+		return -1;
+	}
+	
+	// A 2d array is returned which contains the names of the materials and the maps.
+	function getMaterialHtml(material, index)
+	{
+		var name = material[0];
+		var innerHtml = '<div class="matContainer">';
+		
+		// Show thumbnail
+		var difIndex = getDiffuseFromMaterial(material);
+		if(difIndex > -1)
+		{
+			innerHtml += '<img class="thumb" src="' + material[1][difIndex][0] + '" onclick="openImg(' + index + ',' + difIndex + ')" />';
+		}
+		for(var m = 0; m < material[1].length; m++)
+		{
+			innerHtml += '<div class="mapType" onclick="openImg(' + index + ',' + m + ')">' + material[1][m][2] + '<span class="thumbTooltip"><img src="' + material[1][m][0] + '" /></span></div>';
+		}
+		
+		innerHtml += '<br><div class="thumbSubtitle">' + name + '</div>';
+		innerHtml += '</div>';
+		return innerHtml;
 	}
 	
 	/** Open parent folder. */
@@ -238,10 +298,10 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 	}
 
 	/** Retrieve the path of the map and if IE then open windows explorer to the map, or if any other browser then offer to copy the path. */
-	function openImg(index)
+	function openImg(matIndex, mapIndex)
 	{
-		var folderPathIndex = containedMaps[index][1].lastIndexOf('\\');
-		var folderPath = containedMaps[index][1].substr(0, folderPathIndex);
+		var folderPathIndex = containedMats[matIndex][1][mapIndex][1].lastIndexOf('\\');
+		var folderPath = containedMats[matIndex][1][mapIndex][1].substr(0, folderPathIndex);
 		
 		if(!!document.documentMode)	// Is IE
 		{

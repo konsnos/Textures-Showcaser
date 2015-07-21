@@ -29,6 +29,59 @@ body {
     border: 1px solid black;
 }
 
+.containerList {
+    display: inline-block;
+}
+
+.matContainer {
+    display: inline-block;
+    width: 200px;
+    height: 220px;
+    margin: 10px 10px 0 0;
+}
+
+.mapType {
+    width: 200px;
+    height: 20px;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    border:1px solid black;
+    background: #dddddd;
+}
+
+.mapType:hover {
+    width: 200px;
+    height: 20px;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    border:1px solid black;
+    background: #aaaaaa;
+}
+
+.mapType span{
+    display:none;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    color:black;
+    background:white;
+}
+
+.mapType:hover span {
+    display:block;
+    position:fixed;
+    z-index:1000;
+    width:auto;
+    height:auto;
+    border:1px solid black;
+    margin-top:8px;
+    margin-left:18px;
+    overflow:hidden;
+    padding:8px;
+}
+
 .thumbTitle {
     display: inline-block;
     width: 200px;
