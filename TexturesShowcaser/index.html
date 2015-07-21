@@ -92,7 +92,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		
 		//now, extract items from xmlDomDoc and assign to appropriate text input fields
 		nodeNamesDepth = [xmlDomDoc.documentElement.nodeName];
-		//document.write(xmlDomDoc.documentElement.textContent);
+		//document.write(xmlDomDoc.documentElement.textContent); // Test xml
 	
 		document.getElementById("path").style.display = 'block';
 		//traverse(xmlDomDoc);
@@ -260,6 +260,9 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		var width = 224;
 		var height = 224;
 		
+		var widthMargin = 18;
+		var heightMargin = 8;
+		
 		var availWidth = screen.availWidth;
 		
 		var posX;
@@ -267,7 +270,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		
 		if(x + width > availWidth)
 		{
-			posX = (x - width) + 'px';
+			posX = (x - width - widthMargin) + 'px';
 		}
 		else
 		{
@@ -280,7 +283,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		}
 		else
 		{
-			posY = (y - height) + 'px';
+			posY = (y - height - heightMargin) + 'px';
 		}
 		
 		for(var i = 0;i<thumbsTooltips.length;i++)
