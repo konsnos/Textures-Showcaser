@@ -31,9 +31,9 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 </div>
 
 <script>
-	var xmlLoaded;
-
 	document.getElementById('xmlInput').addEventListener('change', handleFileSelect, false);
+	var thumbsTooltips = document.getElementsByClassName('thumbTooltip'); // Retrieve all thumb tooltips.
+	window.onmousemove = toolTipsFollowMouse;
 
 	// If api is supported this is true.
 	var apiSupported;
@@ -213,10 +213,13 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		
 		for(var m = 0;m<maps.length;m++)
 		{
-			innerHtml += '<span class="thumbTitle"><img class="thumb" src="' + maps[m][0] + '" title="' + maps[m][1].replace(/^.*[\\\/]/, '') + '" onclick="openImg(' + m + ')" /></span>';
+			// get name from path: .replace(/^.*[\\\/]/, '')
+			//innerHtml += '<span class="thumbTitle"><img class="thumb" src="' + maps[m][0] + '" title="' + maps[m][1].replace(/^.*[\\\/]/, '') + '" onclick="openImg(' + m + ')" /></span>';
+			innerHtml += '<span class="thumbTitle"><img class="thumb" src="' + maps[m][0] + '" onclick="openImg(' + m + ')" /><span class="thumbTooltip"><img src="' + maps[m][0] + '"></span></span>';
 		}
 		span.innerHTML = innerHtml;
 		
+		thumbsTooltips = document.getElementsByClassName('thumbTooltip');
 		document.getElementById('list').insertBefore(span, null);
 	}
 	
@@ -247,6 +250,43 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		else	// Other browser
 		{
 			prompt("Folder path", folderPath);
+		}
+	}
+	
+	/** Makes tooltips follow mouse position and aligns it to be visible. */
+	function toolTipsFollowMouse(e)
+	{
+		var x = e.clientX, y = e.clientY;
+		var width = 224;
+		var height = 224;
+		
+		var availWidth = screen.availWidth;
+		
+		var posX;
+		var posY;
+		
+		if(x + width > availWidth)
+		{
+			posX = (x - width) + 'px';
+		}
+		else
+		{
+			posX = x + 'px';
+		}
+		
+		if(y - height < 0)
+		{
+			posY = y + 'px';
+		}
+		else
+		{
+			posY = (y - height) + 'px';
+		}
+		
+		for(var i = 0;i<thumbsTooltips.length;i++)
+		{
+			thumbsTooltips[i].style.top = posY;
+			thumbsTooltips[i].style.left = posX;
 		}
 	}
 </script>

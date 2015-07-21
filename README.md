@@ -6,16 +6,16 @@ To open it, just open with any browser the file index.html . The page will requi
 
 Version 1.0
 
-### Requirements ###
+## Requirements ##
 
 Textures Showcaser is local-only page, so it can work on any pc agnostically.
 
 However requires an xml and thumbnails provided by TexturesXMLExporter. The xml provides data in a tree hierarchy about containing folders, materials and textures. The thumbnails should be 200x200 pixels, and are used to show a preview of the textures.
 
-### Contribution guidelines ###
+## Contribution guidelines ##
 
 Code must be self documented. Commit messages must also explain their changes.
 
-### Contact ###
+## Contact ##
 
 * Konstantinos Egkarchos (konsnosl@gmail.com)
