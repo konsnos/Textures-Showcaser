@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Textures Showcaser</title>
-<script type='text/javascript' src='xml.js'></script>
-<link rel="stylesheet" href="styles.css">
+	<meta charset="utf-8"/>
+	<title>Textures Showcaser</title>
+	<script type='text/javascript' src='xml.js'></script>
+	<link rel="stylesheet" href="styles.css">
 </head>
 <body onload="javascript:initialize()">
 
@@ -271,11 +272,11 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		var difIndex = getDiffuseFromMaterial(material);
 		if(difIndex > -1)
 		{
-			innerHtml += '<img class="thumb" src="' + material[1][difIndex][0] + '" onclick="openImg(' + index + ',' + difIndex + ')" />';
+			innerHtml += '<img class="thumb" src="file:///' + material[1][difIndex][0] + '" onclick="openImg(' + index + ',' + difIndex + ')" />';
 		}
 		for(var m = 0; m < material[1].length; m++)
 		{
-			innerHtml += '<div class="mapType" onclick="openImg(' + index + ',' + m + ')">' + material[1][m][2] + '<span class="thumbTooltip"><img src="' + material[1][m][0] + '" /></span></div>';
+			innerHtml += '<div class="mapType" onclick="openImg(' + index + ',' + m + ')">' + material[1][m][2] + '<span class="thumbTooltip"><img src="file:///' + material[1][m][0] + '" /></span></div>';
 		}
 		
 		innerHtml += '<br><div class="thumbSubtitle">' + name + '</div>';
