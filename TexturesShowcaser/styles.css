@@ -10,8 +10,6 @@ body {
     font-size: 90%;
     background-color:#ffffff;
     text-align: center;
-    margin-left: auto;
-    margin-right: auto;
     padding:6px;
     border: 1px solid black;
 }
@@ -23,8 +21,6 @@ body {
     font-size: 80%;
     background-color:#bbbbbb;
     text-align: center;
-    margin-left: auto;
-    margin-right: auto;
     padding:6px;
     border: 1px solid black;
 }
