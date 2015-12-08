@@ -4,7 +4,11 @@ Textures Showcaser is a tool which along with TexturesXMLExporter shows textures
 
 To open it, just open with any browser the file index.html . The page will require an xml generated with TexturesXMLExporter. When provided then the page shows all folders and textures with thumbnails in tree-hierarchy.
 
-Version 1.0
+Version 1.1
+
+## Info ##
+
+Previews of materials are the first diffuse map found. Otherwise the first other map found. If none is found then the first map of whatever type is picked to be the preview.
 
 ## Requirements ##
 
@@ -19,3 +23,7 @@ Code must be self documented. Commit messages must also explain their changes.
 ## Contact ##
 
 * Konstantinos Egkarchos (konsnosl@gmail.com)
+
+## TODO ##
+
+* Check with Microsoft's Edge.

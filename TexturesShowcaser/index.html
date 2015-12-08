@@ -249,11 +249,11 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 	}
 	
 	/** Returns the index of the map that is diffuse. Or -1 if there is none. */
-	function getDiffuseFromMaterial(material)
+	function getMapTypeFromMaterial(material, mapType)
 	{
 		for(var m = 0; m < material[1].length; m++)
 		{
-			if(material[1][m][2] == 'diffuse')
+			if(material[1][m][2] == mapType)
 			{
 				return m;
 			}
@@ -268,8 +268,18 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		var name = material[0];
 		var innerHtml = '<div class="matContainer">';
 		
-		// Show thumbnail
-		var difIndex = getDiffuseFromMaterial(material);
+		// get thumbnail
+		var difIndex = getMapTypeFromMaterial(material, 'diffuse');
+		if (difIndex == -1)
+		{
+			difIndex = getMapTypeFromMaterial(material, 'other');
+		}
+		if(difIndex == -1)
+		{
+			difIndex = 0;
+		}
+		
+		// Show preview
 		if(difIndex > -1)
 		{
 			innerHtml += '<img class="thumb" src="file:///' + material[1][difIndex][0] + '" onclick="openImg(' + index + ',' + difIndex + ')" />';
