@@ -8,7 +8,7 @@ Version 1.1
 
 ## Info ##
 
-Previews of materials are the first diffuse map found. Otherwise the first other map found. If none is found then the first map of whatever type is picked to be the preview.
+Previews of materials is set the first diffuse map found. Otherwise the first other map found. If none is found then the first map of whatever type is picked to be the preview.
 
 ## Requirements ##
 
