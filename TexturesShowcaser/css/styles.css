@@ -123,3 +123,8 @@ body {
     margin-left: auto;
     margin-right: auto;
 }
+
+.thumbTooltipImage {
+    width: 200px;
+    height: 200px;
+}

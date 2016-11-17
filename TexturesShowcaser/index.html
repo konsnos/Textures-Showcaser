@@ -154,7 +154,14 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 			// Handle maps
 			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "map")
 			{
-				maps.push([childNodes[cn].getAttribute('thumb'), childNodes[cn].textContent, childNodes[cn].getAttribute('type')]);
+				if(childNodes[cn].hasAttribute('thumb'))
+				{
+					maps.push([childNodes[cn].getAttribute('thumb'), childNodes[cn].textContent, childNodes[cn].getAttribute('type')]);
+				}
+				else
+				{
+					maps.push([childNodes[cn].textContent, childNodes[cn].textContent, childNodes[cn].getAttribute('type')]);
+				}
 			}
 			// Handle materials
 			if (childNodes[cn].nodeType == Node.ELEMENT_NODE && childNodes[cn].nodeName == "material")
@@ -286,7 +293,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		}
 		for(var m = 0; m < material[1].length; m++)
 		{
-			innerHtml += '<div class="mapType" onclick="openImg(' + index + ',' + m + ')">' + material[1][m][2] + '<span class="thumbTooltip"><img src="file:///' + material[1][m][0] + '" /></span></div>';
+			innerHtml += '<div class="mapType" onclick="openImg(' + index + ',' + m + ')">' + material[1][m][2] + '<span class="thumbTooltip"><img class="thumbTooltipImage" src="file:///' + material[1][m][0] + '" /></span></div>';
 		}
 		
 		innerHtml += '<br><div class="thumbSubtitle">' + name + '</div>';
