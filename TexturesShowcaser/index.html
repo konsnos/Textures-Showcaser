@@ -235,13 +235,13 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 		if(nodeNamesDepth.length > 1)
 		{
 			title = nodeNamesDepth[nodeNamesDepth.length - 1];
-			innerHtml += '<div class="thumbTitle"><img class="thumb" src="./images/folder_up.png" title="' + title + '" onclick="goToParentFolder()" /><br><div class="thumbSubtitle">' + title + '</div></div>';
+			innerHtml += '<div class="thumbTitle"><img class="thumb" src="./images/folder_up.png" title="' + title + '" onclick="goToParentFolder()" /><div class="thumbSubtitle">' + title + '</div></div>';
 		}
 		
 		for(var f = 0; f < folders.length; f++)
 		{
 			title = folders[f];
-			innerHtml += '<div class="thumbTitle"><img class="thumb" src="./images/folder.png" title="' + title + '" onclick="goToFolder(\'' + title + '\')" /><br><div class="thumbSubtitle">' + title + '</div></div>';	
+			innerHtml += '<div class="thumbTitle"><img class="thumb" src="./images/folder.png" title="' + title + '" onclick="goToFolder(\'' + title + '\')" /><div class="thumbSubtitle">' + title + '</div></div>';	
 		}
 		
 		for(var m = 0; m < materials.length; m++)
@@ -296,7 +296,7 @@ Textures Showcaser is a tool built in conjuction to TexturesXMLExporter, by <a h
 			innerHtml += '<div class="mapType" onclick="openImg(' + index + ',' + m + ')">' + material[1][m][2] + '<span class="thumbTooltip"><img class="thumbTooltipImage" src="file:///' + material[1][m][0] + '" /></span></div>';
 		}
 		
-		innerHtml += '<br><div class="thumbSubtitle">' + name + '</div>';
+		innerHtml += '<div class="thumbSubtitle">' + name + '</div>';
 		innerHtml += '</div>';
 		return innerHtml;
 	}
